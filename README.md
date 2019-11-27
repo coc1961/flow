@@ -8,6 +8,8 @@ Simple framework to design workflows based on processes connected through channe
 
 >  Each process will process the data received from its input channel until the end of the data.
 
+> Each created process can be reused in other flows
+
 Creating a Process:
 
 ```go

@@ -3,21 +3,21 @@ package flow
 //Chan Flow Chan
 type Chan interface{}
 
-//Item Flow Chan
-type Item interface {
+//Process Flow Chan
+type Process interface {
 	Process(input Chan, output Chan)
 }
 
 //Flow flujo
 type Flow struct {
 	outputChan Chan
-	item       Item
+	item       Process
 	prev       *Flow
 	next       *Flow
 }
 
 //New New Flow
-func New(item Item, inputChan, outputChan Chan) *Flow {
+func New(item Process, inputChan, outputChan Chan) *Flow {
 	flow := Flow{
 		prev:       nil,
 		item:       item,
@@ -28,7 +28,7 @@ func New(item Item, inputChan, outputChan Chan) *Flow {
 }
 
 //Add Add
-func (f *Flow) Add(item Item, outputChan Chan) *Flow {
+func (f *Flow) Add(item Process, outputChan Chan) *Flow {
 	if f.next != nil {
 		return f.next.Add(item, outputChan)
 	}

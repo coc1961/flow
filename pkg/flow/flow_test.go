@@ -26,7 +26,7 @@ func TestFlow_run(t *testing.T) {
 		go func(ii int) {
 			ctx := flow.Context{}
 
-			ctx["time"] = ii
+			ctx["counter"] = ii
 
 			input := make(chan string, 1)
 			outChan := f1.Start(input, ctx)
@@ -54,7 +54,7 @@ type Step1 struct {
 }
 
 func (p Step1) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
-	fmt.Println("Start Step1", ctx["time"])
+	fmt.Println("Start Step1", ctx["counter"])
 
 	out := output.(chan string)
 	in := input.(chan string)
@@ -70,14 +70,14 @@ func (p Step1) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 
 	close(out)
 
-	fmt.Println("End Step1", ctx["time"])
+	fmt.Println("End Step1", ctx["counter"])
 }
 
 type Step2 struct {
 }
 
 func (p Step2) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
-	fmt.Println("Start Step2", ctx["time"])
+	fmt.Println("Start Step2", ctx["counter"])
 	in := input.(chan string)
 	ou := output.(chan int)
 
@@ -93,14 +93,14 @@ func (p Step2) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 
 	close(ou)
 
-	fmt.Println("End Step2", ctx["time"])
+	fmt.Println("End Step2", ctx["counter"])
 }
 
 type Step3 struct {
 }
 
 func (p Step3) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
-	fmt.Println("Start Step3", ctx["time"])
+	fmt.Println("Start Step3", ctx["counter"])
 	in := input.(chan int)
 	ou := output.(chan int)
 
@@ -118,5 +118,5 @@ func (p Step3) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 	ou <- tot
 	close(ou)
 
-	fmt.Println("End Step3", ctx["time"])
+	fmt.Println("End Step3", ctx["counter"])
 }

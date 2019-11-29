@@ -41,7 +41,7 @@ func TestFlow_run(t *testing.T) {
 			out := outChan.(chan int)
 			res := <-out
 			fmt.Println(res)
-			if res != 10000 {
+			if res != 100000 {
 				t.Error("Flow Error")
 			}
 			wg.Done()

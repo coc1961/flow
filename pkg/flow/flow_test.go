@@ -30,7 +30,7 @@ func TestFlow_run(t *testing.T) {
 
 			input := make(chan string, 1)
 			outChan := f1.Start(input, ctx)
-			for n := 0; n < 100; n++ {
+			for n := 0; n < 1000; n++ {
 				input <- "10"
 				input <- "20"
 				input <- "30"

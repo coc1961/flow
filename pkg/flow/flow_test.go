@@ -20,7 +20,7 @@ func TestFlow_run(t *testing.T) {
 
 	wg := sync.WaitGroup{}
 
-	for i := 0; i < 10; i++ {
+	for i := 1; i <= 10; i++ {
 		wg.Add(1)
 
 		go func(ii int) {

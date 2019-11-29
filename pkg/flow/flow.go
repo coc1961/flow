@@ -32,9 +32,6 @@ func New(item Process, outputChan Chan) *Flow {
 
 //Start a Flow
 func (f *Flow) Start(inputChan Chan) Chan {
-	if f.prev != nil {
-		f.prev.Start(inputChan)
-	}
 	out := f.makeChannel()
 	f.run(inputChan, out)
 
@@ -68,9 +65,9 @@ func (f *Flow) run(input, output Chan) {
 	go f.item.Process(input, output)
 }
 
-func (f *Flow) makeChannel() interface{} {
+func (f *Flow) makeChannel() Chan {
 	if f.outputChan == nil {
-		return nil
+		return make(chan interface{}, 0)
 	}
 	cType := reflect.ChanOf(reflect.BothDir, reflect.TypeOf(f.outputChan))
 	if reflect.TypeOf(f.outputChan).Kind() == reflect.Chan {

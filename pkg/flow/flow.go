@@ -7,9 +7,12 @@ import (
 //Chan Flow Chan
 type Chan interface{}
 
+//Context Flow Context
+type Context map[string]interface{}
+
 //Process Flow Chan
 type Process interface {
-	Process(input Chan, output Chan)
+	Process(input Chan, output Chan, ctx Context)
 }
 
 //Flow flujo
@@ -31,15 +34,15 @@ func New(item Process, outputChan Chan) *Flow {
 }
 
 //Start a Flow
-func (f *Flow) Start(inputChan Chan) Chan {
+func (f *Flow) Start(inputChan Chan, ctx Context) Chan {
 	out := f.makeChannel()
-	f.run(inputChan, out)
+	f.run(inputChan, out, ctx)
 
 	next := f.next
 	in := out
 	for next != nil {
 		out = next.makeChannel()
-		next.run(in, out)
+		next.run(in, out, ctx)
 		next = next.next
 		in = out
 	}
@@ -61,8 +64,8 @@ func (f *Flow) Add(item Process, outputChan Chan) *Flow {
 }
 
 //Run Run
-func (f *Flow) run(input, output Chan) {
-	go f.item.Process(input, output)
+func (f *Flow) run(input, output Chan, ctx Context) {
+	go f.item.Process(input, output, ctx)
 }
 
 func (f *Flow) makeChannel() Chan {

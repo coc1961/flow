@@ -34,7 +34,7 @@ func TestFlow_makeChannel(t *testing.T) {
 		{
 			name: "Int chan",
 			fields: fields{
-				outputChan: make(chan int, 0),
+				outputChan: make(chan int, 10),
 			},
 			want: make(chan int, 0),
 		},

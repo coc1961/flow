@@ -14,13 +14,13 @@ func TestFlow_run(t *testing.T) {
 	Step2 := Step2{}
 	Step3 := Step3{}
 
-	f1 := flow.New(Step1, make(chan string, 0))
-	f1.Add(Step2, make(chan int, 0))
-	f1.Add(Step3, make(chan int, 0))
+	f1 := flow.New(Step1, make(chan string, 10))
+	f1.Add(Step2, make(chan int, 10))
+	f1.Add(Step3, make(chan int, 10))
 
 	wg := sync.WaitGroup{}
 
-	for i := 1; i <= 100; i++ {
+	for i := 1; i <= 1000; i++ {
 		wg.Add(1)
 
 		go func(ii int) {

@@ -72,9 +72,11 @@ func (f *Flow) makeChannel() Chan {
 	if f.outputChan == nil {
 		return make(chan interface{}, 0)
 	}
+	cap := 0
 	cType := reflect.ChanOf(reflect.BothDir, reflect.TypeOf(f.outputChan))
 	if reflect.TypeOf(f.outputChan).Kind() == reflect.Chan {
+		cap = reflect.ValueOf(f.outputChan).Cap()
 		cType = reflect.ChanOf(reflect.BothDir, reflect.TypeOf(f.outputChan).Elem())
 	}
-	return reflect.MakeChan(cType, 0).Interface()
+	return reflect.MakeChan(cType, cap).Interface()
 }

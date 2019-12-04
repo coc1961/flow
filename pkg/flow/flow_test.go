@@ -2,6 +2,7 @@ package flow_test
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"sync"
 	"testing"
@@ -13,10 +14,12 @@ func TestFlow_run(t *testing.T) {
 	Step1 := Step1{}
 	Step2 := Step2{}
 	Step3 := Step3{}
+	Panic := Panic{}
 
 	f1 := flow.New(Step1, make(chan string, 10))
 	f1.Add(Step2, make(chan int, 10))
 	f1.Add(Step3, make(chan int, 10))
+	f1.Add(Panic, make(chan int, 10))
 
 	wg := sync.WaitGroup{}
 
@@ -48,6 +51,7 @@ func TestFlow_run(t *testing.T) {
 		}(int(i))
 	}
 	wg.Wait()
+	log.Println("Flow", f1.Err())
 }
 
 type Step1 struct {
@@ -119,4 +123,30 @@ func (p Step3) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 	close(ou)
 
 	fmt.Println("End Step3", ctx["counter"])
+}
+
+type Panic struct {
+}
+
+func (p Panic) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
+	fmt.Println("Start Panic", ctx["counter"])
+	in := input.(chan int)
+	ou := output.(chan int)
+
+	for {
+		num, ok := <-in
+		if ok {
+			ou <- num
+		} else {
+			break
+		}
+	}
+
+	close(ou)
+
+	fmt.Println("End Panic", ctx["counter"])
+
+	//Force Error to test Recovery
+	var i *int
+	*i++ // Nil force error
 }

@@ -1,6 +1,7 @@
 package flow
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -21,6 +22,7 @@ type Flow struct {
 	item       Process
 	prev       *Flow
 	next       *Flow
+	err        error
 }
 
 //New New Flow
@@ -65,7 +67,14 @@ func (f *Flow) Add(item Process, outputChan Chan) *Flow {
 
 //Run Run
 func (f *Flow) run(input, output Chan, ctx Context) {
-	go f.item.Process(input, output, ctx)
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				f.first().err = fmt.Errorf("Error: %v - Process: (%v.Process())", r, reflect.TypeOf(f.item))
+			}
+		}()
+		f.item.Process(input, output, ctx)
+	}()
 }
 
 func (f *Flow) makeChannel() Chan {
@@ -79,4 +88,16 @@ func (f *Flow) makeChannel() Chan {
 		cType = reflect.ChanOf(reflect.BothDir, reflect.TypeOf(f.outputChan).Elem())
 	}
 	return reflect.MakeChan(cType, cap).Interface()
+}
+
+func (f *Flow) first() *Flow {
+	if f.prev != nil {
+		return f.prev.first()
+	}
+	return f
+}
+
+//Err flow error
+func (f *Flow) Err() error {
+	return f.first().err
 }

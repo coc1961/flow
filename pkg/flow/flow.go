@@ -70,7 +70,7 @@ func (f *Flow) run(input, output Chan, ctx Context) {
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
-				f.first().err = fmt.Errorf("Error: %v - Process: (%v.Process())", r, reflect.TypeOf(f.item))
+				f.first().err = fmt.Errorf("Flow '%v.Process()' - Error: %v ", reflect.TypeOf(f.item), r)
 			}
 		}()
 		f.item.Process(input, output, ctx)

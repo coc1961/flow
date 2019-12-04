@@ -51,7 +51,7 @@ func TestFlow_run(t *testing.T) {
 		}(int(i))
 	}
 	wg.Wait()
-	log.Println("Flow", f1.Err())
+	log.Println(f1.Err())
 }
 
 type Step1 struct {

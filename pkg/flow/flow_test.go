@@ -62,6 +62,7 @@ func (p Step1) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 
 	out := output.(chan string)
 	in := input.(chan string)
+	defer close(out)
 
 	for {
 		str, ok := <-in
@@ -71,8 +72,6 @@ func (p Step1) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 			break
 		}
 	}
-
-	close(out)
 
 	fmt.Println("End Step1", ctx["counter"])
 }
@@ -84,6 +83,7 @@ func (p Step2) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 	fmt.Println("Start Step2", ctx["counter"])
 	in := input.(chan string)
 	ou := output.(chan int)
+	defer close(ou)
 
 	for {
 		str, ok := <-in
@@ -95,8 +95,6 @@ func (p Step2) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 		}
 	}
 
-	close(ou)
-
 	fmt.Println("End Step2", ctx["counter"])
 }
 
@@ -107,6 +105,7 @@ func (p Step3) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 	fmt.Println("Start Step3", ctx["counter"])
 	in := input.(chan int)
 	ou := output.(chan int)
+	defer close(ou)
 
 	tot := 0
 
@@ -120,7 +119,6 @@ func (p Step3) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 	}
 
 	ou <- tot
-	close(ou)
 
 	fmt.Println("End Step3", ctx["counter"])
 }
@@ -132,7 +130,7 @@ func (p Panic) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 	fmt.Println("Start Panic", ctx["counter"])
 	in := input.(chan int)
 	ou := output.(chan int)
-
+	defer close(ou)
 	for {
 		num, ok := <-in
 		if ok {
@@ -141,8 +139,6 @@ func (p Panic) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
 			break
 		}
 	}
-
-	close(ou)
 
 	fmt.Println("End Panic", ctx["counter"])
 

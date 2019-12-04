@@ -16,10 +16,14 @@ Creating a Process:
 type Summarizer struct {
 }
 
-func (p Summarizer) Process(input flow.Chan, output flow.Chan) {
+func (p Summarizer) Process(input flow.Chan, output flow.Chan, ctx flow.Context) {
     //Cast input and output channels
     in := input.(chan int)
     out := output.(chan int)
+
+    //I close the output channel, when no more data to send
+    defer close(out)
+
 
     //I add the input values ​​and accumulate the total
     tot:=0
@@ -33,9 +37,6 @@ func (p Summarizer) Process(input flow.Chan, output flow.Chan) {
 
     //Send the total to the output channel
     out <- tot
-
-    //I close the output channel, no more data to send
-    close(out)
 
 }
 ```
@@ -51,8 +52,10 @@ Creating a Flow
     // I create the flow data input channel
     input := make(chan string, 1)
 
+    ctx := flow.Context{}
+
     //Start the flow
-    outChan := fl.Start(input)
+    outChan := fl.Start(input, ctx)
 ```
 
 Using the Flow
@@ -79,7 +82,6 @@ Using the Flow
 Adding Processes to the Flow
 
 ```go
-
     // I create the flow with an instance of Process.
     // The input channel of the flow.
     // The output channel of the flow
@@ -94,8 +96,10 @@ Adding Processes to the Flow
     // I create the flow data input channel
     input := make(chan string, 1)
 
+    ctx := flow.Context{}
+
    //Start the flow
-    outChan := fl.Start(input)
+    outChan := fl.Start(input, ctx)
 
     // I execute the flow and now the total 100 number is transformed into a string as shown below
 

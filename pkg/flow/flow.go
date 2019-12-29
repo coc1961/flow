@@ -79,7 +79,7 @@ func (f *Flow) run(input, output Chan, ctx Context) {
 
 func (f *Flow) makeChannel() Chan {
 	if f.outputChan == nil {
-		return make(chan interface{}, 0)
+		return make(chan interface{})
 	}
 	cap := 0
 	cType := reflect.ChanOf(reflect.BothDir, reflect.TypeOf(f.outputChan))

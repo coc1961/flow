@@ -48,7 +48,7 @@ func TestFlow_run(t *testing.T) {
 				t.Error("Flow Error")
 			}
 			wg.Done()
-		}(int(i))
+		}(i)
 	}
 	wg.Wait()
 	log.Println(f1.Err())

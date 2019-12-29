@@ -22,21 +22,21 @@ func TestFlow_makeChannel(t *testing.T) {
 			fields: fields{
 				outputChan: nil,
 			},
-			want: make(chan interface{}, 0),
+			want: make(chan interface{}),
 		},
 		{
 			name: "Int chan",
 			fields: fields{
 				outputChan: int(0),
 			},
-			want: make(chan int, 0),
+			want: make(chan int),
 		},
 		{
 			name: "Int chan",
 			fields: fields{
 				outputChan: make(chan int, 10),
 			},
-			want: make(chan int, 0),
+			want: make(chan int),
 		},
 	}
 	for _, tt := range tests {
